@@ -8,9 +8,10 @@ public class ConnectionFactory {
 
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "fatec");
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/sgca", "root", "fatec");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.err.println("Connection error: " + e.getMessage());
+            return null;
         }
     }
 
@@ -19,17 +20,17 @@ public class ConnectionFactory {
         try {
             cn = getConnection();
             if (cn != null) {
-                System.out.println("Status da conexão: " + !cn.isClosed());
+                System.out.println("Connection status: " + !cn.isClosed());
             }
         } catch (SQLException e) {
-            System.err.println("Erro de conexão: " + e.getMessage());
+            System.err.println("Connection error: " + e.getMessage());
         } finally {
             if (cn != null) {
                 try {
                     cn.close();
-                    System.out.println("Conexão fechada.");
+                    System.out.println("Connection closed.");
                 } catch (SQLException e) {
-                    System.err.println("Erro ao fechar a conexão: " + e.getMessage());
+                    System.err.println("Error on close connection: " + e.getMessage());
                 }
             }
         }
