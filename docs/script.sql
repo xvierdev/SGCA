@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS curso (
 -- Criação da tabela de alunos
 CREATE TABLE IF NOT EXISTS aluno (
     idAluno INTEGER PRIMARY key auto_increment,
+    idCurso INTEGER NOT NULL,
+    FOREIGN KEY (idCurso) REFERENCES curso(idCurso) ON DELETE CASCADE, -- excluir todos os alunos se o curso for excluído
     nome VARCHAR(50) NOT NULL,
     cpf VARCHAR(11) unique NOT NULL,
     telefone VARCHAR(20),
@@ -23,5 +25,5 @@ CREATE TABLE IF NOT EXISTS aluno (
     dataNascimento DATE,
     CHECK (LENGTH(cpf) = 11),
     CHECK (LENGTH(nome) >= 3),
-    CHECK (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')
+    CHECK (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$') -- validação simples de email com regex
 );
