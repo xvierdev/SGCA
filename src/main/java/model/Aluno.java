@@ -10,6 +10,7 @@ public class Aluno {
     private final String cpf;
     private int telefone;
     private String email;
+    private boolean ativo;
     private final LocalDate dataNascimento;
 
     public Aluno(int idAluno, String nome, String cpf, int telefone, String email, LocalDate dataNascimento) {
@@ -23,6 +24,7 @@ public class Aluno {
         this.telefone = telefone;
         this.email = email;
         this.dataNascimento = dataNascimento;
+        this.ativo = true;
     }
 
     public String getNome() {
@@ -48,6 +50,14 @@ public class Aluno {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setAtivo(boolean status) {
+        this.ativo = status;
+    }
+
+    public boolean getAtivo() {
+        return this.ativo;
     }
 
     private void validarNome(String nome) {
@@ -108,9 +118,9 @@ public class Aluno {
             throw new IllegalArgumentException("CPF inválido.");
         }
     }
-    
-    private void validarEmail(String email){
-        if(!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")){
+
+    private void validarEmail(String email) {
+        if (!email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             throw new IllegalArgumentException("E-mail inválido.");
         }
     }
