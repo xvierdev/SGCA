@@ -11,9 +11,9 @@ CREATE TABLE
         cargaHoraria INTEGER NOT NULL,
         CHECK (cargaHoraria >= 20),
         limiteAlunos INTEGER NOT NULL,
-        CHECK (limiteAlunos >= 1)
+        CHECK (limiteAlunos >= 1),
         ativo TINYINT DEFAULT 1,
-		CHECK (ativo IN (0, 1)),
+		CHECK (ativo IN (0, 1))
     );
 
 -- Criação da tabela de alunos
