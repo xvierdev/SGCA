@@ -8,7 +8,7 @@ public class ConnectionFactory {
 
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://localhost:3306/sgca", "aluno", "fatec");
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/sgca", "root", "fatec");
         } catch (SQLException e) {
             System.err.println("Connection error: " + e.getMessage());
             return null;

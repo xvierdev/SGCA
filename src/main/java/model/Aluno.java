@@ -6,14 +6,15 @@ import java.time.Period;
 public class Aluno {
 
     private final int idAluno;
+    private int idCurso;
     private String nome;
     private final String cpf;
-    private int telefone;
+    private String telefone;
     private String email;
     private boolean ativo;
     private final LocalDate dataNascimento;
 
-    public Aluno(int idAluno, String nome, String cpf, int telefone, String email, LocalDate dataNascimento) {
+    public Aluno(int idAluno, int idCurso, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) {
         validarNome(nome);
         validarIdade(dataNascimento);
         validarCpf(cpf);
@@ -25,10 +26,19 @@ public class Aluno {
         this.email = email;
         this.dataNascimento = dataNascimento;
         this.ativo = true;
+        this.idCurso = idCurso;
     }
 
     public int getIdAluno() {
         return this.idAluno;
+    }
+
+    public void setIdCurso(int idCurso) {
+        this.idCurso = idCurso;
+    }
+
+    public int getIdCurso() {
+        return this.idCurso;
     }
 
     public LocalDate getDataNascimento() {
@@ -48,11 +58,11 @@ public class Aluno {
         this.nome = nome;
     }
 
-    public int getTelefone() {
+    public String getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(int telefone) {
+    public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
 
@@ -141,6 +151,8 @@ public class Aluno {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(idAluno);
+        sb.append(", ");
+        sb.append(idCurso);
         sb.append(", ");
         sb.append(nome);
         sb.append(", ");

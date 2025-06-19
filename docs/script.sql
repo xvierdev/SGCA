@@ -33,9 +33,3 @@ CREATE TABLE
             email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
         ) -- validação simples de email com regex
     );
-
--- Script de teste
-INSERT INTO curso VALUES (1001, "curso falso", 33, 20, 1);
-INSERT INTO curso VALUES (1002, "curso verdadeiro", 123, 123, 1);
-SELECT * FROM curso WHERE idCurso = 1001;
-SELECT * FROM curso;
