@@ -27,6 +27,18 @@ public class Aluno {
         this.ativo = true;
     }
 
+    public int getIdAluno() {
+        return this.idAluno;
+    }
+
+    public LocalDate getDataNascimento() {
+        return this.dataNascimento;
+    }
+
+    public String getCpf() {
+        return this.cpf;
+    }
+
     public String getNome() {
         return nome;
     }

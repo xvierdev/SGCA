@@ -8,11 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class cursoDao {
-    private Connection conn;
+class CursoDao {
+    private final Connection conn;
 
-    public cursoDao() {
-        new ConnectionFactory();
+    public CursoDao() {
         this.conn = ConnectionFactory.getConnection();
     }
 

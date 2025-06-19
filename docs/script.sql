@@ -2,7 +2,7 @@
 CREATE DATABASE IF NOT EXISTS sgca;
 use sgca;
 
--- Criação da tabale de cursos
+-- Criação da table de cursos
 CREATE TABLE
     IF NOT EXISTS curso (
         idCurso INTEGER PRIMARY key auto_increment,
