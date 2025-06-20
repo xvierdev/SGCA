@@ -3,20 +3,21 @@ package dao;
 import factory.ConnectionFactory;
 import model.Curso;
 
+import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 class CursoDao {
-    
+
     private final Connection conn;
-    
+
     public CursoDao() {
         this.conn = ConnectionFactory.getConnection();
     }
-    
-    public Curso getCurso(int id) throws SQLException {
+
+    public Curso obterCurso(int id) throws SQLException {
         String sql = "SELECT * FROM curso WHERE idCurso = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -35,7 +36,23 @@ class CursoDao {
             }
         }
     }
-    
+
+    public boolean desativarCurso(int idCurso) throws SQLException {
+        String sql = "UPDATE curso SET ativo = 0 WHERE idCurso = (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idCurso);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean ativarCurso(int idCurso) throws SQLException {
+        String sql = "UPDATE curso SET ativo = 1 WHERE idCurso = (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idCurso);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
     public boolean cursoEstaAtivo(int idCurso) throws SQLException {
         String sql = "SELECT ativo FROM curso WHERE idCurso = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -47,7 +64,7 @@ class CursoDao {
             return false;
         }
     }
-    
+
     public boolean updateCargaHorariaCurso(int id, int novaCargaHoraria) throws SQLException {
         String sql = "UPDATE curso SET cargaHoraria = (?) WHERE idCurso = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -56,7 +73,7 @@ class CursoDao {
             return stmt.executeUpdate() > 0;
         }
     }
-    
+
     public boolean updateLimiteAlunos(int id, int novoLimiteAlunos) throws SQLException {
         String sql = "UPDATE curso SET limiteAlunos = (?) WHERE idCurso = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -64,7 +81,7 @@ class CursoDao {
             return stmt.executeUpdate() > 0;
         }
     }
-    
+
     public boolean updateNomeCurso(int id, String nome) throws SQLException {
         String sql = "UPDATE curso set nome = (?) WHERE idCurso = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -74,10 +91,12 @@ class CursoDao {
         }
     }
 
-//    public boolean updateCurso(int id, int cargaHoraria, int limiteAlunos, String nomeCurso) throws SQLException {
-//        String sql = "UPDATE curso SET cargaHoraria = (?), limiteAlunos = (?), nomeCurso = ()";
-//        return false;
-//    }
+    // public boolean updateCurso(int id, int cargaHoraria, int limiteAlunos, String
+    // nomeCurso) throws SQLException {
+    // String sql = "UPDATE curso SET cargaHoraria = (?), limiteAlunos = (?),
+    // nomeCurso = ()";
+    // return false;
+    // }
     // Funcional
     public boolean addCurso(String nomeCurso, int cargaHoraria, int limiteAlunos) throws SQLException {
         String sql = "INSERT INTO curso (nome, cargaHoraria, limiteAlunos) VALUES (?, ?, ?)";
@@ -88,7 +107,7 @@ class CursoDao {
             return stmt.executeUpdate() > 0;
         }
     }
-    
+
     public boolean removeCurso(int idCurso) throws SQLException {
         String sql = "DELETE FROM curso WHERE idCurso = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -96,7 +115,7 @@ class CursoDao {
             return stmt.executeUpdate() > 0;
         }
     }
-    
+
     public int getIdCursoByName(String nomeCurso) throws SQLException {
         String sql = "SELECT idCurso FROM curso WHERE nome = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
