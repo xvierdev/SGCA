@@ -29,7 +29,7 @@ CREATE TABLE
         dataNascimento DATE,
         CONSTRAINT chk_aluno_cpf_length CHECK (LENGTH (cpf) = 11),
         CONSTRAINT chk_alunos_nome_length CHECK (LENGTH (nome) >= 3),
-        CONTRAINT chk_aluno_email_valido CHECK (
+        CONSTRAINT chk_aluno_email_valido CHECK (
             email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
         ) -- validação simples de email com regex
     );
