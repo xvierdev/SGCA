@@ -17,16 +17,15 @@ public class AlunoDao {
         this.conn = ConnectionFactory.getConnection();
     }
 
-    public Aluno getAlunoByID(int id) throws SQLException {
-        String sql = "SELECT * FROM aluno WHERE idAluno = (?)";
+    public Aluno getAlunoByCpf(String cpf) throws SQLException {
+        String sql = "SELECT * FROM aluno WHERE cpf = (?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setString(1, cpf);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int idAluno = rs.getInt("idAluno");
                     int idCurso = rs.getInt("idCurso");
                     String nome = rs.getString("nome");
-                    String cpf = rs.getString("cpf");
                     String telefone = rs.getString("telefone");
                     String email = rs.getString("email");
                     LocalDate dataNascimento = rs.getDate("dataNascimento").toLocalDate();
@@ -47,6 +46,14 @@ public class AlunoDao {
             stmt.setString(4, telefone);
             stmt.setString(5, email);
             stmt.setDate(6, Date.valueOf(dataNascimento));
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean removeAluno(String cpf) throws SQLException {
+        String sql = "DELETE FROM aluno WHERE cpf = (?)";
+        try (PreparedStatement stmt = conn.prepareCall(sql)) {
+            stmt.setString(1, cpf);
             return stmt.executeUpdate() > 0;
         }
     }

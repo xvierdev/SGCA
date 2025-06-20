@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 class CursoDao {
+
     private final Connection conn;
 
     public CursoDao() {
@@ -35,13 +36,45 @@ class CursoDao {
         }
     }
 
+    public boolean updateCurso(int id, String nome) throws SQLException {
+        String sql = "UPDATE curso set nome = (?) WHERE idCurso = (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nome);
+            stmt.setInt(id, id);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
     public boolean addCurso(String nomeCurso, int cargaHoraria, int limiteAlunos) throws SQLException {
         String sql = "INSERT INTO curso (nome, cargaHoraria, limiteAlunos) VALUES (?, ?, ?)";
-        try(PreparedStatement stmt = conn.prepareStatement(sql)){
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nomeCurso);
             stmt.setInt(2, cargaHoraria);
             stmt.setInt(3, limiteAlunos);
             return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean removeCurso(int idCurso) throws SQLException {
+        String sql = "DELETE FROM curso WHERE idCurso = (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idCurso);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public int getIdCursoByName(String nomeCurso) throws SQLException {
+        String sql = "SELECT idCurso FROM curso WHERE nome = (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nomeCurso);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("idCurso");
+                }
+                else{
+                    return -1;
+                }
+            }
         }
     }
 }

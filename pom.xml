@@ -14,11 +14,11 @@
         <junit.jupiter.version>5.10.0</junit.jupiter.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
-            <!-- ou a versão mais recente -->
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
