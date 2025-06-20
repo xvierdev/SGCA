@@ -6,14 +6,14 @@ use sgca;
 CREATE TABLE
     IF NOT EXISTS curso (
         idCurso INTEGER PRIMARY key auto_increment,
-        nome VARCHAR(20) NOT NULL,
-        CHECK (LENGTH (nome) >= 3),
+        nome VARCHAR(20) NOT NULL UNIQUE,
+        CONSTRAINT chk_curso_nome_length CHECK (LENGTH (nome) >= 3),
         cargaHoraria INTEGER NOT NULL,
-        CHECK (cargaHoraria >= 20),
+        CONSTRAINT chk_curso_carga_horaria_minima CHECK (cargaHoraria >= 20),
         limiteAlunos INTEGER NOT NULL,
-        CHECK (limiteAlunos >= 1),
+        CONSTRAINT chk_curso_limite_alunos_minimo CHECK (limiteAlunos >= 1),
         ativo TINYINT DEFAULT 1,
-		CHECK (ativo IN (0, 1))
+		CONSTRAINT chk_curso_ativo_valido CHECK (ativo IN (0, 1))
     );
 
 -- Criação da tabela de alunos
@@ -27,9 +27,9 @@ CREATE TABLE
         telefone VARCHAR(20),
         email VARCHAR(255),
         dataNascimento DATE,
-        CHECK (LENGTH (cpf) = 11),
-        CHECK (LENGTH (nome) >= 3),
-        CHECK (
+        CONSTRAINT chk_aluno_cpf_length CHECK (LENGTH (cpf) = 11),
+        CONSTRAINT chk_alunos_nome_length CHECK (LENGTH (nome) >= 3),
+        CONTRAINT chk_aluno_email_valido CHECK (
             email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
         ) -- validação simples de email com regex
     );
