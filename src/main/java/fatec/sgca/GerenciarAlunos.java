@@ -304,13 +304,14 @@ public class GerenciarAlunos {
         int idCurso = sc.nextInt();
         sc.nextLine();
 
-        CursoDao cursoDao = new CursoDao();
-        Curso curso = cursoDao.buscarPorId(idCurso);
-        if (curso == null) {
-            System.out.println("Curso com ID " + idCurso + " não encontrado.");
-            return;
+        try (CursoDao cursoDao = new CursoDao()) {
+            Curso curso = cursoDao.buscarPorId(idCurso);
+            if (curso == null) {
+                System.out.println("Curso com ID " + idCurso + " não encontrado.");
+                return;
+            }
+            System.out.println("\n--- Alunos do Curso: " + curso.getNome() + " (ID: " + curso.getIdCurso() + ") ---");
         }
-        System.out.println("\n--- Alunos do Curso: " + curso.getNome() + " (ID: " + curso.getIdCurso() + ") ---");
 
         // Chamada ao novo método no AlunoDao
         List<Aluno> alunosDoCurso = alunoDao.buscarAlunosPorCurso(idCurso);

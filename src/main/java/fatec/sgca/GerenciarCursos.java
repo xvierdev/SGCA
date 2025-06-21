@@ -43,20 +43,47 @@ public class GerenciarCursos {
 
             try {
                 switch (opcao) {
-                    case 1: adicionarCurso(sc); break;
-                    case 2: buscarCursoPorId(sc); break;
-                    case 3: buscarTodosCursos(); break;
-                    case 4: atualizarCurso(sc); break;
-                    case 5: removerCurso(sc); break;
-                    case 6: desativarCurso(sc); break;
-                    case 7: ativarCurso(sc); break;
-                    case 8: verificarCursoAtivo(sc); break;
-                    case 9: buscarIdCursoPorNome(sc); break;
-                    case 10: obterLimiteAlunosCurso(sc); break;
-                    case 11: obterTotalAlunosNoCurso(sc); break;
-                    case 12: verificarCursoCheio(sc); break;
-                    case 13: return; // Volta ao menu principal
-                    default: System.out.println("Opção inválida.");
+                    case 1:
+                        adicionarCurso(sc);
+                        break;
+                    case 2:
+                        buscarCursoPorId(sc);
+                        break;
+                    case 3:
+                        buscarTodosCursos();
+                        break;
+                    case 4:
+                        atualizarCurso(sc);
+                        break;
+                    case 5:
+                        removerCurso(sc);
+                        break;
+                    case 6:
+                        desativarCurso(sc);
+                        break;
+                    case 7:
+                        ativarCurso(sc);
+                        break;
+                    case 8:
+                        verificarCursoAtivo(sc);
+                        break;
+                    case 9:
+                        buscarIdCursoPorNome(sc);
+                        break;
+                    case 10:
+                        obterLimiteAlunosCurso(sc);
+                        break;
+                    case 11:
+                        obterTotalAlunosNoCurso(sc);
+                        break;
+                    case 12:
+                        verificarCursoCheio(sc);
+                        break;
+                    case 13:
+                        return; // Volta ao menu principal
+                    default:
+                        System.out.println("Opção inválida.");
+                }
             } catch (SQLException e) {
                 System.err.println("Erro de banco de dados: " + e.getMessage());
                 e.printStackTrace();
@@ -65,7 +92,6 @@ public class GerenciarCursos {
             } catch (Exception e) {
                 System.err.println("Ocorreu um erro inesperado: " + e.getMessage());
                 e.printStackTrace();
-            }
             }
         }
     }
@@ -89,7 +115,6 @@ public class GerenciarCursos {
             }
         } catch (IllegalArgumentException e) {
             System.err.println(ERRO_VALIDACAO + e.getMessage());
-        }
         }
     }
 
@@ -142,7 +167,7 @@ public class GerenciarCursos {
         if (novaCargaHoraria != 0) {
             cursoExistente.setCargaHoraria(novaCargaHoraria);
         }
-        
+
         System.out.print("Novo Limite de Alunos (0 para manter " + cursoExistente.getLimiteAlunos() + "): ");
         int novoLimiteAlunos = sc.nextInt();
         if (novoLimiteAlunos != 0) {
@@ -166,7 +191,6 @@ public class GerenciarCursos {
         } catch (IllegalArgumentException e) {
             System.err.println(ERRO_VALIDACAO + e.getMessage());
         }
-        }
     }
 
     private void removerCurso(Scanner sc) throws SQLException {
@@ -174,7 +198,8 @@ public class GerenciarCursos {
         int id = sc.nextInt();
         sc.nextLine();
 
-        System.out.println("ATENÇÃO: Remover um curso também removerá todos os alunos associados a ele devido à integridade referencial (ON DELETE CASCADE).");
+        System.out.println(
+                "ATENÇÃO: Remover um curso também removerá todos os alunos associados a ele devido à integridade referencial (ON DELETE CASCADE).");
         System.out.print("Deseja realmente remover o curso " + id + "? (s/n): ");
         String confirmacao = sc.nextLine().toLowerCase();
 
