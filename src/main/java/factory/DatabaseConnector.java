@@ -14,7 +14,7 @@ public class DatabaseConnector {
 
     // Configurações do banco de dados
     // A URL foi atualizada para permitir múltiplos comandos SQL em uma única chamada.
-    private static final String DB_URL = "jdbc:mysql://192.168.20.50:3306/?allowMultiQueries=true"; // URL base sem o nome do banco
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/?allowMultiQueries=true"; // URL base sem o nome do banco
     private static final String DB_NAME = "sgca"; // Nome do banco de dados a ser criado
     private static final String USER = "aluno"; // Usuário do banco de dados (ajuste conforme sua configuração)
     private static final String PASS = "fatec"; // Senha do banco de dados (AJUSTE AQUI!)
@@ -40,18 +40,19 @@ public class DatabaseConnector {
             + "CREATE TABLE IF NOT EXISTS aluno (\n"
             + "    idAluno INTEGER PRIMARY KEY auto_increment,\n"
             + "    idCurso INTEGER NOT NULL,\n"
-            + "    FOREIGN KEY (idCurso) REFERENCES curso (idCurso) ON DELETE CASCADE, -- excluir todos os alunos se o curso for excluído\n"
+            + "    FOREIGN KEY (idCurso) REFERENCES curso (idCurso) ON DELETE CASCADE,\n"
             + "    nome VARCHAR(50) NOT NULL,\n"
-            + "    cpf VARCHAR(11) unique NOT NULL,\n"
+            + "    cpf VARCHAR(11) UNIQUE NOT NULL,\n"
             + "    telefone VARCHAR(20),\n"
             + "    email VARCHAR(255),\n"
             + "    dataNascimento DATE,\n"
+            + "    ativo TINYINT DEFAULT 1,\n"
+            + "    CONSTRAINT chk_aluno_ativo_valido CHECK (ativo IN (0, 1)),\n"
             + "    CONSTRAINT chk_aluno_cpf_length CHECK (LENGTH (cpf) = 11),\n"
             + "    CONSTRAINT chk_alunos_nome_length CHECK (LENGTH (nome) >= 3),\n"
             + "    CONSTRAINT chk_aluno_email_valido CHECK (\n"
-            + // Correção: CONTRAINT para CONSTRAINT
-            "        email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$'\n"
-            + "    ) -- validação simples de email com regex\n"
+            + "    email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,}$'\n"
+            + "    )\n"
             + ");";
 
     /**
