@@ -1,0 +1,41 @@
+    // --- Métodos de Negócio/Relacionamento (para lista de alunos) ---
+    public void adicionarAluno(Aluno aluno) {
+        if (this.listaAluno.size() < this.limiteAlunos) {
+            this.listaAluno.add(aluno);
+        } else {
+            throw new IllegalStateException("O curso atingiu o limite máximo de alunos.");
+        }
+    }
+
+    public void removerAluno(Aluno aluno) {
+        this.listaAluno.remove(aluno);
+    }
+
+    public List<Aluno> getListaAlunos() {
+        // Retorna uma cópia defensiva para evitar modificações externas diretas na
+        // lista interna
+        return new ArrayList<>(this.listaAluno);
+    }
+
+    public int getNumeroAtualAlunos() {
+        return this.listaAluno.size();
+    }
+
+    // --- Métodos de Validação (Privados) ---
+    private void validarNome(String nome) {
+        if (nome == null || nome.trim().isEmpty() || nome.trim().length() < 3) {
+            throw new IllegalArgumentException("O nome do curso deve ter no mínimo 3 caracteres e não pode ser vazio.");
+        }
+    }
+
+    private void validarCargaHoraria(int cargaHoraria) {
+        if (cargaHoraria < 20) {
+            throw new IllegalArgumentException("A carga horária mínima é de 20 Horas.");
+        }
+    }
+
+    private void validarLimiteAlunos(int limiteAlunos) {
+        if (limiteAlunos < 1) {
+            throw new IllegalArgumentException("O limite mínimo de alunos é 1.");
+        }
+    }
