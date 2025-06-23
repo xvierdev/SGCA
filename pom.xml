@@ -32,6 +32,11 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE250</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
