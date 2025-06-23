@@ -1,10 +1,14 @@
 package services;
 
 import model.Aluno;
+import model.Curso;
 import dao.AlunoDao;
+import dao.CursoDao;
 import exceptions.AlunoInvalidoException;
+import exceptions.CursoInvalidoException;
 import exceptions.ErroSistemaException;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -12,13 +16,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList; // Para coletar múltiplos erros
+import java.util.ArrayList;
+import model.enums.Status;
+import utils.FileSaver;
 
 public class AlunoService {
-    private AlunoDao alunoDao;
 
-    public AlunoService(AlunoDao alunoDao) {
+    private final AlunoDao alunoDao;
+    private final CursoDao cursoDao;
+
+    public AlunoService(AlunoDao alunoDao, CursoDao cursoDao) {
         this.alunoDao = alunoDao;
+        this.cursoDao = cursoDao;
+    }
+
+    private void validarCurso(int id) throws SQLException {
+        if (!cursoDao.estaAtivo(id)) {
+            throw new CursoInvalidoException("Curso não está ativo.");
+        }
     }
 
     private void validarNome(String nome) {
@@ -103,11 +118,16 @@ public class AlunoService {
     }
 
     // --- Métodos de Negócio ---
-
     public void adicionarAluno(int idCurso, String nome, String cpf, String telefone, String email,
             LocalDate dataNascimento) {
         // Lógica para coletar e lançar múltiplos erros
         List<String> erros = new ArrayList<>();
+        try {
+            validarCurso(idCurso);
+        } catch (CursoInvalidoException | SQLException e) {
+            erros.add(e.getMessage());
+        }
+
         try {
             validarNome(nome);
         } catch (AlunoInvalidoException e) {
@@ -141,17 +161,21 @@ public class AlunoService {
         // Se todas as validações passarem, cria e salva o aluno
         Aluno novoAluno = new Aluno(idCurso, nome, cpf, telefone, email, dataNascimento);
         try {
-            alunoDao.adicionar(novoAluno);
+            if (cursoDao.cursoCheio(idCurso)) {
+                throw new CursoInvalidoException("O curso já está cheio.");
+            } else {
+                alunoDao.adicionar(novoAluno);
+            }
             System.out.println("Aluno '" + nome + "' adicionado com sucesso!");
         } catch (SQLException e) {
             throw new ErroSistemaException(
-                    "Falha ao cadastrar o aluno devido a um erro no banco de dados. " + e.getMessage(), e);
+                    "Falha ao cadastrar o aluno devido a um erro no banco de dados.", e);
         }
 
     }
 
     public void atualizarAluno(int idAluno, int idCurso, String nome, String cpf, String telefone, String email,
-            LocalDate dataNascimento) {
+            LocalDate dataNascimento, Status status) {
         Optional<Aluno> alunoExistenteOpt;
         try {
             alunoExistenteOpt = alunoDao.buscarPorId(idAluno);
@@ -203,6 +227,7 @@ public class AlunoService {
         alunoParaAtualizar.setTelefone(telefone);
         alunoParaAtualizar.setEmail(email);
         alunoParaAtualizar.setDataNascimento(dataNascimento);
+        alunoParaAtualizar.setAtivo(status);
 
         try {
             alunoDao.atualizar(alunoParaAtualizar);
@@ -223,9 +248,44 @@ public class AlunoService {
         }
     }
 
+    public Optional<Aluno> obterAlunoPorCpf(String cpf) {
+        try {
+            return alunoDao.buscarPorCpf(cpf);
+        } catch (SQLException e) {
+            throw new ErroSistemaException(
+                    "Falha ao obter aluno devido a um erro no banco de dados. " + e.getMessage(), e);
+        }
+    }
+
     public List<Aluno> listarTodosAlunos() {
         try {
             return alunoDao.buscarTodos();
+        } catch (SQLException e) {
+            throw new ErroSistemaException(
+                    "Falha ao obter a lista de alunos devido a um erro no banco de dados. " + e.getMessage(), e);
+        }
+    }
+
+    public List<Aluno> listarAlunos(Status filterStatus) {
+        try {
+            if (filterStatus == null) {
+                return alunoDao.buscarTodos();
+            } else {
+                return alunoDao.buscarTodosFiltrado(filterStatus);
+            }
+        } catch (SQLException e) {
+            throw new ErroSistemaException(
+                    "Falha ao obter a lista de alunos devido a um erro no banco de dados. " + e.getMessage(), e);
+        }
+    }
+
+    public List<Aluno> listarAlunosPorCurso(int idCurso, Status filterStatus) {
+        try {
+            if (filterStatus == null) {
+                return alunoDao.buscarAlunosPorCurso(idCurso);
+            } else {
+                return alunoDao.buscarAlunosPorCurso(idCurso, filterStatus);
+            }
         } catch (SQLException e) {
             throw new ErroSistemaException(
                     "Falha ao obter a lista de alunos devido a um erro no banco de dados. " + e.getMessage(), e);
@@ -237,8 +297,11 @@ public class AlunoService {
         try {
             alunoExistente = alunoDao.buscarPorId(id);
             if (alunoExistente.isPresent()) {
-                alunoDao.deletar(id);
-                System.out.println("Aluno com ID " + id + " removido com sucesso.");
+                if (alunoDao.deletar(id)) {
+                    System.out.println("Aluno com ID " + id + " removido com sucesso.");
+                } else {
+                    throw new AlunoInvalidoException("Aluno com ID " + id + " não pôde ser removido.");
+                }
             } else {
                 throw new AlunoInvalidoException("Aluno com ID " + id + " não encontrado para remoção.");
             }
@@ -247,4 +310,96 @@ public class AlunoService {
                     "Falha ao remover aluno devido a um erro no banco de dados. " + e.getMessage(), e);
         }
     }
+
+    public void desativar(int id) {
+        Optional<Aluno> alunoDesativar;
+        try {
+            alunoDesativar = alunoDao.buscarPorId(id);
+            if (alunoDesativar.isPresent()) {
+                if (alunoAtivo(id)) {
+                    alunoDao.desativar(id);
+                    System.out.println("Aluno com ID " + id + " desativado com sucesso.");
+                }
+            } else {
+                throw new AlunoInvalidoException("Aluno com ID" + id + " não encontrado para desativação.");
+            }
+        } catch (SQLException e) {
+            throw new ErroSistemaException(
+                    "Falha ao desativar aluno devido a um erro no banco de dados. " + e.getMessage(), e);
+        }
+    }
+
+    public void ativar(int id) {
+        Optional<Aluno> alunoAtivar;
+        try {
+            alunoAtivar = alunoDao.buscarPorId(id);
+            if (alunoAtivar.isPresent()) {
+                if (!alunoAtivo(id)) {
+                    alunoDao.ativar(id);
+                    System.out.println("Aluno com ID " + id + " ativado com sucesso.");
+                }
+            } else {
+                throw new AlunoInvalidoException("Aluno com ID" + id + " não encontrado para ativação.");
+            }
+        } catch (SQLException e) {
+            throw new ErroSistemaException(
+                    "Falha ao ativar aluno devido a um erro no banco de dados. " + e.getMessage(), e);
+        }
+    }
+
+    public boolean alunoAtivo(int id) {
+        Optional<Aluno> alunoVerificar;
+        try {
+            alunoVerificar = alunoDao.buscarPorId(id);
+            if (alunoVerificar.isPresent()) {
+                return alunoDao.estaAtivo(id);
+            } else {
+                throw new AlunoInvalidoException("Aluno com ID" + id + " não encontrado.");
+            }
+        } catch (SQLException e) {
+            throw new ErroSistemaException(
+                    "Falha ao verificar aluno devido a um erro no banco de dados. " + e.getMessage(), e);
+        }
+    }
+
+    public boolean existe(int id) {
+        try {
+            return alunoDao.existeAluno(id);
+        } catch (SQLException e) {
+            throw new ErroSistemaException("Falha ao consultar existência do aluno no banco de dados.", e);
+        }
+    }
+
+    /**
+     *
+     * @param caminhoArquivo
+     * @param alunos
+     */
+    public void exportarAlunos(String caminhoArquivo, List<Aluno> alunos) {
+        List<String> linhasParaSalvar = new ArrayList<>();
+
+        linhasParaSalvar.add(
+                "idCurso;nomeCurso;idAluno;nomeAluno;cpf;telefone;email;dataNascimento");
+        try {
+            for (Aluno aluno : alunos) {
+                if (aluno != null) {
+                    Curso curso = cursoDao.buscarPorId(aluno.getIdCurso()).orElse(null);
+                    if (curso != null) {
+                        linhasParaSalvar.add(String.format("%d;%s;%d;%s;%s;%s;%s;%s",
+                                curso.getIdCurso(), curso.getNome(),
+                                aluno.getIdAluno(), aluno.getNome(),
+                                aluno.getCpf(), aluno.getTelefone(),
+                                aluno.getEmail(), aluno.getDataNascimento()));
+                    }
+                }
+            }
+
+            // Usa o FileSaver genérico para salvar a lista de strings formatadas
+            FileSaver.saveListToFile(caminhoArquivo, linhasParaSalvar);
+            System.out.println("Cursos e alunos exportados com sucesso para: " + caminhoArquivo);
+        } catch (SQLException | IOException e) {
+            throw new ErroSistemaException("Erro ao salvar arquivo.", e);
+        }
+    }
+
 }

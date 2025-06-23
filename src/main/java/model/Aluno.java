@@ -2,6 +2,8 @@ package model;
 
 import java.time.LocalDate;
 
+import model.enums.Status;
+
 public class Aluno {
 
     private int idAluno;
@@ -11,7 +13,7 @@ public class Aluno {
     private String telefone;
     private String email;
     private LocalDate dataNascimento;
-    private boolean ativo;
+    private Status status;
 
     public Aluno(int idCurso, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) {
         this.idAluno = 0;
@@ -21,7 +23,19 @@ public class Aluno {
         this.telefone = telefone;
         this.email = email;
         this.dataNascimento = dataNascimento;
-        this.ativo = true;
+        this.status = Status.ATIVO;
+    }
+
+    public Aluno(int idAluno, int idCurso, String nome, String cpf, String telefone, String email,
+            LocalDate dataNascimento, Status status) {
+        this.idAluno = idAluno;
+        this.idCurso = idCurso;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.telefone = telefone;
+        this.email = email;
+        this.dataNascimento = dataNascimento;
+        this.status = status;
     }
 
     public int getIdAluno() {
@@ -52,7 +66,7 @@ public class Aluno {
         return this.cpf;
     }
 
-    public void setCpf(String cpf){
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
@@ -80,14 +94,14 @@ public class Aluno {
         this.dataNascimento = dataNascimento;
     }
 
-    public boolean isAtivo() {
-        return this.ativo;
+    public Status isAtivo() {
+        return this.status;
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public void setAtivo(Status status) {
+        this.status = status;
     }
-    
+
     @Override
     public String toString() {
         return "Aluno{" +
@@ -98,7 +112,7 @@ public class Aluno {
                 ", telefone='" + telefone + '\'' +
                 ", email='" + email + '\'' +
                 ", dataNascimento=" + dataNascimento +
-                ", ativo=" + ativo +
+                ", status=" + status +
                 '}';
     }
 }

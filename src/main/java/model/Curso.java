@@ -1,8 +1,9 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import model.enums.Status;
 
 public class Curso {
 
@@ -10,23 +11,23 @@ public class Curso {
     private String nome;
     private int cargaHoraria;
     private int limiteAlunos;
-    private boolean ativo;
-    private List<Aluno> listaAluno;
+    private Status status;
+    private List<Aluno> listAlunos;
 
     // --- Construtores ---
     public Curso(String nome, int cargaHoraria, int limiteAlunos) {
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.limiteAlunos = limiteAlunos;
-        this.ativo = true;
+        this.status = Status.ATIVO;
     }
 
-    public Curso(int idCurso, String nome, int cargaHoraria, int limiteAlunos, boolean ativo) {
+    public Curso(int idCurso, String nome, int cargaHoraria, int limiteAlunos, Status status) {
         this.idCurso = idCurso;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.limiteAlunos = limiteAlunos;
-        this.ativo = ativo;
+        this.status = status;
     }
 
     // --- Getters e Setters ---
@@ -62,12 +63,20 @@ public class Curso {
         this.limiteAlunos = limiteAlunos;
     }
 
-    public boolean isAtivo() {
-        return ativo;
+    public Status isAtivo() {
+        return status;
     }
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
+    public void setAtivo(Status status) {
+        this.status = status;
+    }
+
+    public void setAlunos(List<Aluno> listAlunos) {
+        this.listAlunos = listAlunos;
+    }
+
+    public List<Aluno> getAlunos() {
+        return this.listAlunos;
     }
 
     @Override
@@ -92,8 +101,6 @@ public class Curso {
                 ", nome='" + nome + '\'' +
                 ", cargaHoraria=" + cargaHoraria +
                 ", limiteAlunos=" + limiteAlunos +
-                ", ativo=" + ativo +
-                ", numeroAlunos=" + listaAluno.size() + // Adiciona o número de alunos
-                '}';
+                ", status=" + status + '}';
     }
 }
