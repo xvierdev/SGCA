@@ -28,7 +28,7 @@ CREATE TABLE
         email VARCHAR(255),
         dataNascimento DATE,
         status TINYINT DEFAULT 1,
-		CONSTRAINT chk_aluno_ativo_valido CHECK (status IN (0, 1))
+		CONSTRAINT chk_aluno_ativo_valido CHECK (status IN (0, 1)),
         CONSTRAINT chk_aluno_cpf_length CHECK (LENGTH (cpf) = 11),
         CONSTRAINT chk_alunos_nome_length CHECK (LENGTH (nome) >= 3),
         CONSTRAINT chk_aluno_email_valido CHECK (

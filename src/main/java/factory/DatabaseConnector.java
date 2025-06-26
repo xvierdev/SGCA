@@ -16,7 +16,7 @@ public class DatabaseConnector {
     // A URL foi atualizada para permitir múltiplos comandos SQL em uma única chamada.
     private static final String DB_URL = "jdbc:mysql://localhost:3306/?allowMultiQueries=true"; // URL base sem o nome do banco
     private static final String DB_NAME = "sgca"; // Nome do banco de dados a ser criado
-    private static final String USER = "aluno"; // Usuário do banco de dados (ajuste conforme sua configuração)
+    private static final String USER = "root"; // Usuário do banco de dados (ajuste conforme sua configuração)
     private static final String PASS = "fatec"; // Senha do banco de dados (AJUSTE AQUI!)
 
     // Script SQL para criação do banco de dados e tabelas com nomes para as restrições

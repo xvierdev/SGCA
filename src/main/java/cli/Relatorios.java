@@ -115,20 +115,6 @@ public class Relatorios {
         }
     }
 
-    private void obterTotalAlunosNoCurso(Scanner sc) throws ErroSistemaException {
-        System.out.print("ID do Curso para obter total de alunos: ");
-        int id = sc.nextInt();
-        sc.nextLine();
-
-        if (cursoService.obterCursoPorId(id).isEmpty()) {
-            System.out.println("Curso com ID " + id + " não encontrado.");
-            throw new CursoInvalidoException("Curso " + id + " não encontrado.");
-        }
-        int total = cursoService.obterTotalAlunosNoCurso(id);
-        System.out.println("Total de alunos matriculados no curso " + id + ": " + total);
-
-    }
-
     private void listarTodosAlunos() throws ErroSistemaException {
         List<Aluno> alunos = alunoService.listarTodosAlunos();
         if (alunos.isEmpty()) {

@@ -16,12 +16,10 @@ import model.enums.Status;
 public class GerenciarAlunos {
 
     private AlunoService alunoService;
-    private CursoService cursoService; // Injetar CursoService para validações relacionadas a curso
 
     // Construtor agora recebe as instâncias de serviço
     public GerenciarAlunos(AlunoService alunoService, CursoService cursoService) {
         this.alunoService = alunoService;
-        this.cursoService = cursoService;
     }
 
     public void menuGerenciarAlunos(Scanner sc) {
